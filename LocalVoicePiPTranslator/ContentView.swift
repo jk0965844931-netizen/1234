@@ -66,7 +66,7 @@ struct ContentView: View {
                     Text(language.title).tag(language)
                 }
             }
-            Text("ใช้ Speech framework สำหรับถอดเสียง และ Translation framework ของ iOS สำหรับแปลแบบ on-device เมื่อระบบรองรับ")
+            Text("ใช้ Speech framework สำหรับถอดเสียง และพจนานุกรมตัวอย่างในเครื่องสำหรับแปลแบบไม่เรียก API ภายนอก")
                 .font(.footnote)
                 .foregroundStyle(.secondary)
         }

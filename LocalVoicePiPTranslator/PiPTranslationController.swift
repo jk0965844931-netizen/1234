@@ -33,7 +33,7 @@ final class PiPTranslationController: NSObject, ObservableObject {
     }
 
     func togglePictureInPicture() {
-        guard AVPictureInPictureController.isPictureInPictureSupported(), let pipController else { return }
+        guard AVPictureInPictureController.isPictureInPictureSupported(), let pipController = pipController else { return }
         if pipController.isPictureInPictureActive {
             pipController.stopPictureInPicture()
         } else {
@@ -86,7 +86,7 @@ final class PiPTranslationController: NSObject, ObservableObject {
             attributes as CFDictionary,
             &pixelBuffer
         )
-        guard let pixelBuffer else { return nil }
+        guard let pixelBuffer = pixelBuffer else { return nil }
 
         CVPixelBufferLockBaseAddress(pixelBuffer, [])
         defer { CVPixelBufferUnlockBaseAddress(pixelBuffer, []) }
@@ -132,7 +132,7 @@ final class PiPTranslationController: NSObject, ObservableObject {
 
         var formatDescription: CMVideoFormatDescription?
         CMVideoFormatDescriptionCreateForImageBuffer(allocator: kCFAllocatorDefault, imageBuffer: pixelBuffer, formatDescriptionOut: &formatDescription)
-        guard let formatDescription else { return nil }
+        guard let formatDescription = formatDescription else { return nil }
 
         var timing = CMSampleTimingInfo(
             duration: frameDuration,
@@ -169,11 +169,15 @@ extension PiPTranslationController: AVPictureInPictureSampleBufferPlaybackDelega
     nonisolated func pictureInPictureController(_ pictureInPictureController: AVPictureInPictureController, setPlaying playing: Bool) {}
 
     nonisolated func pictureInPictureControllerTimeRangeForPlayback(_ pictureInPictureController: AVPictureInPictureController) -> CMTimeRange {
-        CMTimeRange(start: .zero, duration: CMTime(value: 1, timescale: 1))
+        CMTimeRange(start: .zero, duration: .positiveInfinity)
     }
 
     nonisolated func pictureInPictureControllerIsPlaybackPaused(_ pictureInPictureController: AVPictureInPictureController) -> Bool {
         false
+    }
+
+    nonisolated func pictureInPictureControllerShouldProhibitBackgroundAudioPlayback(_ pictureInPictureController: AVPictureInPictureController) -> Bool {
+        true
     }
 
     nonisolated func pictureInPictureController(_ pictureInPictureController: AVPictureInPictureController, didTransitionToRenderSize newRenderSize: CMVideoDimensions) {}
